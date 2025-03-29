@@ -7,12 +7,18 @@ import re  # Keep regex for potential timestamp cleaning
 import time  # Import time for timing
 import datetime  # Import datetime for timestamp
 import sys  # Import sys for stderr
+from dotenv import load_dotenv  # Import dotenv
+
+load_dotenv()  # Load variables from .env file into environment
 
 # --- Configuration ---
-MODEL_NAME = "tiny.en"
-# Consider making host and port configurable if needed
-HOST = "127.0.0.1"
-PORT = 8001  # Choose an available port
+# Read settings from environment variables with defaults
+MODEL_NAME = os.getenv("WHISPER_MODEL_NAME", "tiny.en")
+SERVER_HOST = os.getenv("WHISPER_SERVER_HOST", "127.0.0.1")
+SERVER_PORT = int(os.getenv("WHISPER_SERVER_PORT", "8001"))
+LOG_FILE_PATH = os.getenv("WHISPER_SERVER_LOG_FILE", "/tmp/whisper_server_debug.log")
+# Consider adding USE_FP16 config via env var too
+USE_FP16 = os.getenv("WHISPER_USE_FP16", "False").lower() in ("true", "1", "t")
 
 # --- Load Model ---
 # Load the model globally when the server starts
@@ -53,12 +59,12 @@ async def transcribe_audio(request: TranscriptionRequest):
 
     transcribe_start_time = time.time()
     try:
-        log_message(f"Starting transcription for: {audio_path}")
+        log_message(f"Starting transcription for: {audio_path} (FP16: {USE_FP16})")
         # Perform the transcription using the pre-loaded model
         # Note: whisper.transcribe() when used as library might have different default verbosity
         result = model.transcribe(
-            audio_path, language="en", fp16=False
-        )  # Match settings from stt_copy.py initially
+            audio_path, language="en", fp16=USE_FP16
+        )  # Use configured FP16 setting
         transcription_text = result.get("text", "")
 
         # Optional: Clean timestamps if they appear even in library mode
@@ -88,7 +94,7 @@ async def transcribe_audio(request: TranscriptionRequest):
 
 # --- Logging Setup for Server ---
 # (Assuming same log file for simplicity, or choose a different one)
-LOG_FILE_PATH = "/tmp/whisper_server_debug.log"
+# LOG_FILE_PATH is now defined in Configuration section
 
 
 def log_message(message):
@@ -104,7 +110,9 @@ def log_message(message):
 
 # --- Run Server ---
 if __name__ == "__main__":
-    log_message(f"Starting Whisper API server on {HOST}:{PORT}")  # Log server start
+    log_message(
+        f"Starting Whisper API server on {SERVER_HOST}:{SERVER_PORT} with model {MODEL_NAME}"
+    )  # Log server start details
     # Redirect uvicorn logs potentially?
     # For now, use default uvicorn logging + our file logging
-    uvicorn.run(app, host=HOST, port=PORT, log_level="info")
+    uvicorn.run(app, host=SERVER_HOST, port=SERVER_PORT, log_level="info")

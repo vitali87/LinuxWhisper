@@ -9,12 +9,19 @@ import time
 import signal
 import json
 from datetime import datetime  # Import datetime for timestamps
+from dotenv import load_dotenv  # Import dotenv
 
-# Configuration
-SAMPLE_RATE = 16000
-SERVER_URL = "http://127.0.0.1:8001/transcribe"
-STATE_FILE_PATH = "/tmp/stt_recording_state.json"  # File to store recording state
-LOG_FILE_PATH = "/tmp/stt_copy_debug.log"  # Dedicated log file
+load_dotenv()  # Load variables from .env file into environment
+
+# --- Configuration ---
+# Read settings from environment variables, providing defaults.
+# Type conversions are important here.
+SAMPLE_RATE = int(os.getenv("STT_SAMPLE_RATE", "16000"))
+SERVER_URL = os.getenv("STT_SERVER_URL", "http://127.0.0.1:8001/transcribe")
+STATE_FILE_PATH = os.getenv("STT_STATE_FILE", "/tmp/stt_recording_state.json")
+LOG_FILE_PATH = os.getenv("STT_COPY_LOG_FILE", "/tmp/stt_copy_debug.log")
+LOCK_FILE_PATH = os.getenv("STT_LOCK_FILE", "/tmp/stt_copy_lock")
+POST_KILL_SLEEP = float(os.getenv("STT_POST_KILL_SLEEP", "0.1"))
 
 
 # --- Logging Function ---
@@ -115,7 +122,7 @@ def stop_recording(state):
 
     # Wait a short time for the process to terminate and file to write
     sleep_start_time = time.time()
-    time.sleep(0.1)  # Try reducing sleep from 0.5s to 0.1s
+    time.sleep(POST_KILL_SLEEP)  # Use configured sleep value
     sleep_duration = time.time() - sleep_start_time
 
     # Delete state file FIRST to prevent double-stops if something goes wrong
@@ -384,7 +391,7 @@ if __name__ == "__main__":
         log_message(f"Initial log message failed: {log_init_e}")  # Log init error
 
     # Basic locking to prevent issues if shortcut is triggered rapidly
-    lock_file_path = "/tmp/stt_copy_lock"
+    lock_file_path = LOCK_FILE_PATH  # Use configured lock file path
     lock_acquired = False
     if script_start_success:
         try:

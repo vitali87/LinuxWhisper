@@ -59,7 +59,16 @@ You need the following command-line tools installed:
         ```
     *(You should see `(.venv)` at the beginning of your terminal prompt)*
 
-4.  **Install Python Dependencies:**
+4.  **Configure Settings:**
+    *   Copy the example environment file:
+        ```bash
+        cp .env.example .env
+        ```
+    *   Edit the `.env` file to adjust settings if needed (e.g., change `WHISPER_MODEL_NAME`, temporary file paths, server port).
+        The defaults should work for most basic setups.
+
+5.  **Install Python Dependencies:**
+    *   Ensure your virtual environment is active.
     *   **Using `uv` (Recommended):**
         ```bash
         uv pip install -r requirements.txt
@@ -68,9 +77,9 @@ You need the following command-line tools installed:
         ```bash
         pip install -r requirements.txt
         ```
-    *(This will download the Whisper model chosen in `whisper_server.py` the first time the server runs, if not already cached)*
+    *(This installs necessary libraries like `requests`, `fastapi`, `openai-whisper`, and `python-dotenv`)*
 
-5.  **Run the Whisper Server:**
+6.  **Run the Whisper Server:**
     *   Keep the virtual environment activated.
     *   Open a terminal in the project directory (`LinuxWhisper`).
     *   Run the server:
@@ -79,7 +88,7 @@ You need the following command-line tools installed:
         ```
     *   Leave this terminal running in the background. It needs to stay running for the transcription shortcut to work. You should see output indicating the model is loading and the server is listening (e.g., on `http://127.0.0.1:8001`).
 
-6.  **Configure Keyboard Shortcut:**
+7.  **Configure Keyboard Shortcut:**
     *   Open your Linux desktop environment's keyboard shortcut settings (e.g., in GNOME, KDE, XFCE settings).
     *   Create a **new custom shortcut**.
     *   Set the desired key combination (e.g., `Ctrl+Spacebar`).
@@ -107,4 +116,17 @@ You need the following command-line tools installed:
 *   **Compatibility:** Tested on Kali Linux. Usage on other Linux distributions might require adjustments to ALSA/PulseAudio configuration or shortcut command paths.
 *   **Logging:** Debug logs are written to `/tmp/stt_copy_debug.log` (client script) and `/tmp/whisper_server_debug.log` (server script). Check these files if you encounter issues.
 *   **Lock/State Files:** The script uses `/tmp/stt_copy_lock` and `/tmp/stt_recording_state.json`. If the script crashes, you might need to manually delete these files before it will start again (`rm -f /tmp/stt_copy_lock /tmp/stt_recording_state.json`).
-*   **Server Port:** The server runs on port `8001`. If this conflicts, change the `PORT` variable in `whisper_server.py` and the `SERVER_URL` in `stt_copy.py`. 
+*   **Server Port:** The server runs on the port specified by `WHISPER_SERVER_PORT` in your `.env` file (default `8001`). If this conflicts, change it in `.env`.
+*   **Configuration:** Most settings like model name, server address, temporary file paths, etc., can be adjusted in the `.env` file.
+
+## .env Configuration
+
+The `.env` file contains several configuration options:
+
+*   **`WHISPER_MODEL_NAME`**: This is the name of the Whisper model to be used.
+*   **`WHISPER_SERVER_PORT`**: This is the port on which the server will run.
+*   **`TEMP_DIR`**: This is the directory where temporary files will be stored.
+*   **`SERVER_URL`**: This is the URL of the server.
+*   **`LOG_LEVEL`**: This is the level of logging to be used.
+
+You can edit these options in the `.env` file to suit your needs. 

@@ -1,6 +1,9 @@
 # Python Virtual Environment
 .venv/
 
+# Environment variables
+.env # Ignore the actual .env file
+
 # Python Cache
 __pycache__/
 *.py[cod]
