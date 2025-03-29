@@ -71,13 +71,9 @@ You need the following command-line tools installed:
 
 5.  **Install Python Dependencies:**
     *   Ensure your virtual environment is active.
-    *   **Using `uv` (Recommended):**
+    *   Install using `uv`:
         ```bash
         uv pip install -r requirements.txt
-        ```
-    *   **Using `pip`:**
-        ```bash
-        pip install -r requirements.txt
         ```
     *(This installs necessary libraries like `requests`, `fastapi`, `openai-whisper`, and `python-dotenv`)*
 
