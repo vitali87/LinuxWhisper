@@ -33,6 +33,7 @@ You need the following command-line tools installed:
 ### Python Dependencies
 
 *   Python 3.8+ recommended.
+*   Python 3.12 is recommended and tested.
 *   Packages listed in `requirements.txt`.
 
 ## Setup Instructions
@@ -43,9 +44,10 @@ You need the following command-line tools installed:
     cd LinuxWhisper
     ```
 
-2.  **Create a Python Virtual Environment:**
+2.  **Create a Python Virtual Environment using `uv`:**
     ```bash
-    python -m venv .venv
+    # Ensure you have Python 3.12 available in your system path
+    uv venv -p 3.12 .venv
     ```
 
 3.  **Activate the Virtual Environment:**
