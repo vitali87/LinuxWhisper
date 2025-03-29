@@ -1,0 +1,5 @@
+requests
+openai-whisper
+fastapi
+uvicorn[standard]
+pydantic 
