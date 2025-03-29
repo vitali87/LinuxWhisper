@@ -1,0 +1,13 @@
+# Python Virtual Environment
+.venv/
+
+# Python Cache
+__pycache__/
+*.py[cod]
+
+# Temporary Files
+/tmp/stt_*.json
+/tmp/stt_*.log
+/tmp/whisper_*.log
+/tmp/*.wav
+/tmp/stt_copy_lock 
