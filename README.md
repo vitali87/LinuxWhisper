@@ -10,6 +10,8 @@ A simple Speech-to-Text utility for Linux that allows you to:
 
 This provides a fast, local way to dictate text without relying on external cloud services after the initial model download.
 
+**Note:** This utility has been developed and tested primarily on **Kali Linux (with Zsh)**. While it relies on standard Linux tools (`arecord`, `xclip`) and Python libraries, behavior on other distributions or desktop environments may vary. Use on other systems is possible but may require adjustments.
+
 ## Dependencies
 
 ### System Dependencies
@@ -106,6 +108,7 @@ You need the following command-line tools installed:
 
 *   **Microphone Input:** Ensure `arecord` is using your desired microphone. You might need to configure ALSA or PulseAudio settings if recording fails or is silent. Use `arecord -L` to list devices.
 *   **Performance:** The `tiny.en` model is used by default for speed. Larger models (`base.en`, `small.en`, etc., configured in `whisper_server.py`) are more accurate but significantly slower. Transcription speed depends heavily on your CPU (or GPU if configured with CUDA).
+*   **Compatibility:** Tested on Kali Linux. Usage on other Linux distributions might require adjustments to ALSA/PulseAudio configuration or shortcut command paths.
 *   **Logging:** Debug logs are written to `/tmp/stt_copy_debug.log` (client script) and `/tmp/whisper_server_debug.log` (server script). Check these files if you encounter issues.
 *   **Lock/State Files:** The script uses `/tmp/stt_copy_lock` and `/tmp/stt_recording_state.json`. If the script crashes, you might need to manually delete these files before it will start again (`rm -f /tmp/stt_copy_lock /tmp/stt_recording_state.json`).
 *   **Server Port:** The server runs on port `8001`. If this conflicts, change the `PORT` variable in `whisper_server.py` and the `SERVER_URL` in `stt_copy.py`. 
