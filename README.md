@@ -97,9 +97,45 @@ You need the following command-line tools installed:
         *(Replace `/absolute/path/to/LinuxWhisper` with the actual full path to where you cloned the repository, e.g., `/home/vitali/Documents/stt` in the original example)*.
     *   Save the shortcut.
 
+## Running the Server as a `systemd` Service (Recommended for Persistence)
+
+Instead of manually running `python whisper_server.py` in a terminal, it's recommended to run it as a systemd service for reliability and auto-start on boot.
+
+1.  **Copy the Example Service File:**
+    ```bash
+    cp whisper-stt.service.example whisper-stt.service
+    ```
+
+2.  **Edit `whisper-stt.service`:**
+    *   Open the copied `whisper-stt.service` file in a text editor.
+    *   Replace **all three instances** of `<YOUR_USERNAME>` with your actual Linux username.
+    *   Replace **all four instances** of `<PATH_TO_LinuxWhisper>` with the absolute path to the directory where you cloned this repository (e.g., `/home/vitali/Documents/stt`).
+    *   Save the file.
+
+3.  **Copy the Service File to `systemd`:**
+    *   You'll need `sudo` privileges for this.
+    ```bash
+    sudo cp whisper-stt.service /etc/systemd/system/whisper-stt.service
+    ```
+
+4.  **Reload `systemd`, Enable and Start the Service:**
+    ```bash
+    sudo systemctl daemon-reload
+    sudo systemctl enable whisper-stt.service # Enable to start on boot
+    sudo systemctl start whisper-stt.service  # Start the service now
+    ```
+
+5.  **Check Service Status:**
+    ```bash
+    sudo systemctl status whisper-stt.service
+    ```
+    *   Look for `active (running)`. If it failed, check the logs using `journalctl -u whisper-stt.service`.
+
+6.  **(Important)** If the service is running, you no longer need to manually run `python whisper_server.py` in a separate terminal.
+
 ## Usage
 
-1.  Ensure the `whisper_server.py` script is running in a terminal.
+1.  Ensure the `whisper-stt` service is running (`sudo systemctl status whisper-stt.service`).
 2.  Press your configured shortcut (e.g., `Ctrl+Spacebar`) once to **start** recording.
 3.  Speak clearly into your microphone.
 4.  Press the same shortcut again to **stop** recording.
@@ -115,6 +151,7 @@ You need the following command-line tools installed:
 *   **Logging:** Debug logs are written to `/tmp/stt_copy_debug.log` (client script) and `/tmp/whisper_server_debug.log` (server script). Check these files if you encounter issues.
 *   **Lock/State Files:** The script uses `/tmp/stt_copy_lock` and `/tmp/stt_recording_state.json`. If the script crashes, you might need to manually delete these files before it will start again (`rm -f /tmp/stt_copy_lock /tmp/stt_recording_state.json`).
 *   **Server Port:** The server runs on the port specified by `WHISPER_SERVER_PORT` in your `.env` file (default `8001`). If this conflicts, change it in `.env`.
+*   **Server Management:** If running as a `systemd` service, use `sudo systemctl [start|stop|restart|status] whisper-stt.service` to manage it. Check logs with `journalctl -u whisper-stt.service`.
 *   **Configuration:** Most settings like model name, server address, temporary file paths, etc., can be adjusted in the `.env` file.
 
 ## .env Configuration

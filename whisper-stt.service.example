@@ -1,0 +1,26 @@
+[Unit]
+Description=Whisper STT FastAPI Server
+After=network.target
+
+[Service]
+# IMPORTANT: Replace <YOUR_USERNAME> and <PATH_TO_LinuxWhisper>
+User=<YOUR_USERNAME>
+Group=<YOUR_USERNAME>
+WorkingDirectory=<PATH_TO_LinuxWhisper>
+
+# Path to the Python interpreter in the virtual environment
+ExecStart=<PATH_TO_LinuxWhisper>/.venv/bin/python <PATH_TO_LinuxWhisper>/whisper_server.py
+
+# Environment file for configuration
+EnvironmentFile=<PATH_TO_LinuxWhisper>/.env
+
+# Restart policy
+Restart=on-failure
+RestartSec=5s
+
+# Standard output/error logging (optional, could redirect to file)
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target 
