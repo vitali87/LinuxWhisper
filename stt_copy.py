@@ -155,7 +155,7 @@ def _copy_to_clipboard(text: str) -> float:
     copy_start_time = time.time()
     copy_cmd = ["xclip", "-selection", "clipboard"]
     try:
-        process = subprocess.run(
+        subprocess.run(
             copy_cmd,
             input=text,
             text=True,
@@ -170,7 +170,7 @@ def _copy_to_clipboard(text: str) -> float:
         logger.error(f"Failed to copy (xclip error): {e}. stderr: {e.stderr}")
     except subprocess.TimeoutExpired:
         logger.error("Timeout expired while trying to copy with xclip.")
-    except Exception as e:
+    except Exception:
         logger.exception("An unexpected error occurred during clipboard copy")
     return time.time() - copy_start_time
 
@@ -244,7 +244,7 @@ def stop_recording(state):
         _cleanup_wav_file(wav_filename)
         _remove_state_file(STATE_FILE_PATH)
         sys.exit(1)
-    except Exception as e:
+    except Exception:
         logger.exception("Unexpected error during stop_recording")
         _cleanup_wav_file(wav_filename)
         _remove_state_file(STATE_FILE_PATH)
@@ -292,7 +292,7 @@ def start_recording():
         if "wav_filename" in locals() and os.path.exists(wav_filename):
             os.remove(wav_filename)
         sys.exit(1)
-    except Exception as e:
+    except Exception:
         logger.exception("Error starting arecord")
         if "wav_filename" in locals() and os.path.exists(wav_filename):
             os.remove(wav_filename)
@@ -362,7 +362,7 @@ if __name__ == "__main__":
     except FileExistsError:
         logger.warning("Script is already running (lock file exists). Exiting.")
         sys.exit(1)
-    except Exception as e:
+    except Exception:
         logger.exception(f"Failed to create or acquire lock file {lock_file_path}")
         sys.exit(1)
 
@@ -372,7 +372,7 @@ if __name__ == "__main__":
         try:
             main()
             logger.info("main() function completed successfully.")
-        except Exception as main_e:
+        except Exception:
             logger.exception("Critical error during main() execution")
         finally:
             logger.debug("Entering finally block for lock removal.")
