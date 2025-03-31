@@ -55,10 +55,6 @@ You need the following command-line tools installed:
         ```bash
         source .venv/bin/activate
         ```
-    *   **Fish:**
-        ```bash
-        source .venv/bin/activate.fish
-        ```
     *(You should see `(.venv)` at the beginning of your terminal prompt)*
 
 4.  **Configure Settings:**
