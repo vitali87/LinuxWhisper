@@ -14,3 +14,10 @@ __pycache__/
 /tmp/whisper_*.log
 /tmp/*.wav
 /tmp/stt_copy_lock 
+
+# Systemd service
+whisper-stt.service
+
+.cursor/
+
+.env
